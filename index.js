@@ -1,5 +1,6 @@
 const sizeButton = document.querySelector(".select");
 const template = document.querySelector(".boxes");
+const blackButton = document.querySelector(".black");
 
 sizeButton.addEventListener("click", () => {
   while (true) {
@@ -31,7 +32,24 @@ const sizeCalculator = (size) => {
     cell.classList.add("cell");
     cell.style.width = `${cellWidth}px`;
     cell.style.height = `${cellHeight}px`;
-    cell.style.backgroundColor = "black";
+    cell.style.border = "1px solid black";
     template.appendChild(cell);
   }
 };
+
+const drawCells = () => {
+  let isDrawing = false;
+  let isBlackMode = false;
+  const cells = document.querySelectorAll(".cell");
+
+  blackButton.addEventListener("click", () => {
+    isBlackMode = !isBlackMode;
+    blackButton.textContent = isBlackMode ? "Black Mode (On)" : "Black";
+  });
+
+  cells.forEach((cell) => {
+    // Fareye basıldığında çizim başlayacak
+  });
+};
+
+drawCells();
