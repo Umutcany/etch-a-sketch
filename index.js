@@ -43,6 +43,7 @@ const sizeCalculator = (size) => {
 const drawCells = () => {
   let isDrawing = false;
   let isBlackMode = false;
+  let isRandomMode = false;
 
   blackButton.addEventListener("click", () => {
     const cells = document.querySelectorAll(".cell");
@@ -69,7 +70,32 @@ const drawCells = () => {
     }
   });
 
-  random;
+  randomButton.addEventListener("click", () => {
+    const cells = document.querySelectorAll(".cell");
+    isRandomMode = !isRandomMode;
+    isDrawing = !isDrawing;
+    randomButton.textContent = isRandomMode ? "Random Mode (On)" : "Random";
+    console.log(isDrawing, isRandomMode);
+    if (isRandomMode || isDrawing) {
+      cells.forEach((cell) => {
+        cell.addEventListener("mouseup", () => {
+          cell.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        });
+      });
+    }
+    if (isBlackMode || isDrawing) {
+      cells.forEach((cell) => {
+        cell.addEventListener("mousemove", (e) => {
+          if (isDrawing && e.buttons === 1) {
+            // mouse'un sol tuşu basılı mı onu kontrol et.
+            cell.style.backgroundColor = `hsl(${
+              Math.random() * 360
+            }, 100%, 50%)`;
+          }
+        });
+      });
+    }
+  });
 };
 
 drawCells();
