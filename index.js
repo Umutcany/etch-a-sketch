@@ -1,6 +1,8 @@
 const sizeButton = document.querySelector(".select");
 const template = document.querySelector(".boxes");
 const blackButton = document.querySelector(".black");
+const toggle = document.querySelector(".drawing");
+const randomButton = document.querySelector(".random");
 
 sizeButton.addEventListener("click", () => {
   while (true) {
@@ -12,6 +14,7 @@ sizeButton.addEventListener("click", () => {
     if (isNaN(size) || size <= 0 || size > 100) {
       alert("Please enter a valid number between 1 and 100.");
     } else {
+      toggle.textContent = "Now You Can draw!";
       sizeCalculator(size);
       break;
     }
@@ -40,16 +43,33 @@ const sizeCalculator = (size) => {
 const drawCells = () => {
   let isDrawing = false;
   let isBlackMode = false;
-  const cells = document.querySelectorAll(".cell");
 
   blackButton.addEventListener("click", () => {
+    const cells = document.querySelectorAll(".cell");
     isBlackMode = !isBlackMode;
+    isDrawing = !isDrawing;
     blackButton.textContent = isBlackMode ? "Black Mode (On)" : "Black";
+    console.log(isDrawing, isBlackMode);
+    if (isBlackMode || isDrawing) {
+      cells.forEach((cell) => {
+        cell.addEventListener("mouseup", () => {
+          cell.style.backgroundColor = "black";
+        });
+      });
+    }
+    if (isBlackMode || isDrawing) {
+      cells.forEach((cell) => {
+        cell.addEventListener("mousemove", (e) => {
+          if (isDrawing && e.buttons === 1) {
+            // mouse'un sol tuşu basılı mı onu kontrol et.
+            cell.style.backgroundColor = "black";
+          }
+        });
+      });
+    }
   });
 
-  cells.forEach((cell) => {
-    // Fareye basıldığında çizim başlayacak
-  });
+  random;
 };
 
 drawCells();
