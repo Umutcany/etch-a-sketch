@@ -3,6 +3,7 @@ const template = document.querySelector(".boxes");
 const blackButton = document.querySelector(".black");
 const toggle = document.querySelector(".drawing");
 const randomButton = document.querySelector(".random");
+const resetButton = document.querySelector(".reset");
 
 sizeButton.addEventListener("click", () => {
   while (true) {
@@ -41,61 +42,89 @@ const sizeCalculator = (size) => {
 };
 
 const drawCells = () => {
-  let isDrawing = false;
   let isBlackMode = false;
   let isRandomMode = false;
+  const cells = document.querySelectorAll(".cell");
 
-  blackButton.addEventListener("click", () => {
-    const cells = document.querySelectorAll(".cell");
-    isBlackMode = !isBlackMode;
-    isDrawing = !isDrawing;
-    blackButton.textContent = isBlackMode ? "Black Mode (On)" : "Black";
-    console.log(isDrawing, isBlackMode);
-    if (isBlackMode || isDrawing) {
-      cells.forEach((cell) => {
-        cell.addEventListener("mouseup", () => {
+  // Function to remove all existing event listeners
+  const removeAllListeners = () => {
+    cells.forEach((cell) => {
+      // Using cloneNode(true) and replacing the original element removes all event listeners
+      const newCell = cell.cloneNode(true);
+      cell.parentNode.replaceChild(newCell, cell);
+    });
+  };
+
+  // Function to add appropriate event listeners based on current mode
+  const updateEventListeners = () => {
+    removeAllListeners();
+
+    // Get fresh references after cloning
+    const updatedCells = document.querySelectorAll(".cell");
+
+    updatedCells.forEach((cell) => {
+      cell.addEventListener("mousedown", () => {
+        if (isBlackMode) {
           cell.style.backgroundColor = "black";
-        });
-      });
-    }
-    if (isBlackMode || isDrawing) {
-      cells.forEach((cell) => {
-        cell.addEventListener("mousemove", (e) => {
-          if (isDrawing && e.buttons === 1) {
-            // mouse'un sol tuşu basılı mı onu kontrol et.
-            cell.style.backgroundColor = "black";
-          }
-        });
-      });
-    }
-  });
-
-  randomButton.addEventListener("click", () => {
-    const cells = document.querySelectorAll(".cell");
-    isRandomMode = !isRandomMode;
-    isDrawing = !isDrawing;
-    randomButton.textContent = isRandomMode ? "Random Mode (On)" : "Random";
-    console.log(isDrawing, isRandomMode);
-    if (isRandomMode || isDrawing) {
-      cells.forEach((cell) => {
-        cell.addEventListener("mouseup", () => {
+        } else if (isRandomMode) {
           cell.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        });
+        }
       });
-    }
-    if (isBlackMode || isDrawing) {
-      cells.forEach((cell) => {
-        cell.addEventListener("mousemove", (e) => {
-          if (isDrawing && e.buttons === 1) {
-            // mouse'un sol tuşu basılı mı onu kontrol et.
+
+      cell.addEventListener("mousemove", (e) => {
+        if (e.buttons === 1) {
+          // Left mouse button is pressed
+          if (isBlackMode) {
+            cell.style.backgroundColor = "black";
+          } else if (isRandomMode) {
             cell.style.backgroundColor = `hsl(${
               Math.random() * 360
             }, 100%, 50%)`;
           }
-        });
+        }
       });
+    });
+  };
+
+  blackButton.addEventListener("click", () => {
+    isBlackMode = !isBlackMode;
+
+    if (isBlackMode) {
+      isRandomMode = false;
+      randomButton.textContent = "Random";
+      blackButton.textContent = "Black Mode (On)";
+    } else {
+      blackButton.textContent = "Black";
     }
+
+    updateEventListeners();
+  });
+
+  randomButton.addEventListener("click", () => {
+    isRandomMode = !isRandomMode;
+
+    if (isRandomMode) {
+      isBlackMode = false;
+      blackButton.textContent = "Black";
+      randomButton.textContent = "Random Mode (On)";
+    } else {
+      randomButton.textContent = "Random";
+    }
+
+    updateEventListeners();
   });
 };
+
+// Add this to your existing code
+resetButton.addEventListener("click", () => {
+  const cells = document.querySelectorAll(".cell");
+
+  // Reset the background color of all cells
+  cells.forEach((cell) => {
+    cell.style.backgroundColor = ""; // Set to default (transparent)
+  });
+
+  console.log("Drawing reset");
+});
 
 drawCells();
